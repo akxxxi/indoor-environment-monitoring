@@ -4,6 +4,16 @@
 
 本次目标仓库已由项目所有者指定为 [akxxxi/indoor-environment-monitoring](https://github.com/akxxxi/indoor-environment-monitoring)。
 
+## 2026-10-18 发布记录
+
+软件 MVP、开题 PPT、截图、测试和[项目学习文档](项目从零到完整理解.md)已通过已连接的 GitHub 账号发布到 `main`。首批完整提交为 [234e226c](https://github.com/akxxxi/indoor-environment-monitoring/commit/234e226c723423781693f0a705e01bfb67a02da8)，93 个文件的远程内容指纹与本地逐项一致。
+
+硬件接线、传感器驱动与 STM32 / ESP8266 固件待器件到手后再同步。目前不包含 Android 原生应用、已部署的手机远程访问或设备执行器控制链路，具体范围见学习文档。
+
+首次云端检查中模拟节点和网页通过，后端暴露了测试采样时间排序问题：两组样本的未来时间偏移可能重叠，导致恢复样本被当作旧样本忽略。测试改为跨批次严格递增的毫秒时间后，本机后端 17/17 通过；云端最终结果以仓库 [Actions](https://github.com/akxxxi/indoor-environment-monitoring/actions) 为准。生产报警规则未修改。
+
+下文 Git Credential Manager 命令仅为本机 Git 的备用认证方式；本次通过 GitHub 连接发布，无需为了此次上传重复进行本机登录。
+
 ## 公开内容
 
 公开版本包含三个子项目的源代码、各自锁文件、JSON Schema、设计与验收文档、展示截图、答辩 PPT 和启动/验证脚本。仓库名称为 `indoor-environment-monitoring`，简介可使用：

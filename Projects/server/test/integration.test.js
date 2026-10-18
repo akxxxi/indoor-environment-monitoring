@@ -183,14 +183,21 @@ test('real MQTT/HTTP/SSE: persistence, rejection, transaction failure, latest, c
     savedConfig = result.body.data;
     assert.equal(savedConfig.version, 2);
     await waitFor(() => sse.frames.some(f => f.name === 'thresholds.updated'));
+    // Keep samples strictly ordered even when Windows returns the same wall-clock
+    // millisecond. Adding a per-batch offset can overlap recovery with triggering.
+    let lastSampleMs = Date.parse((await get(latestRoute)).body.data.sampled_at);
+    const freshMessage = (seq, metrics) => {
+      lastSampleMs = Math.max(Date.now(), lastSampleMs + 1);
+      return message(seq, new Date(lastSampleMs).toISOString(), metrics);
+    };
     for (let i = 0; i < 3; i++) {
-      await publish(message(50 + i, new Date(Date.now() + i * 10).toISOString(), { co2_ppm: 1300 }));
+      await publish(freshMessage(50 + i, { co2_ppm: 1300 }));
       await delay(15);
     }
     assert.equal((await get(latestRoute)).body.data.alarms[0].state, 'high');
     await waitFor(() => sse.frames.some(f => f.name === 'alarm.changed'));
     for (let i = 0; i < 3; i++) {
-      await publish(message(60 + i, new Date(Date.now() + i * 10).toISOString(), { co2_ppm: 1000 }));
+      await publish(freshMessage(60 + i, { co2_ppm: 1000 }));
       await delay(15);
     }
     assert.deepEqual((await get(latestRoute)).body.data.alarms, []);
