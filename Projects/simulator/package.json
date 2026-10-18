@@ -1,0 +1,26 @@
+{
+  "name": "@envmon/simulator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "教室环境监测虚拟 MQTT 上传节点",
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env src/index.js",
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "test": "node --test test/*.test.js",
+    "verify:mqtt": "node scripts/verify-mqtt.js",
+    "verify:restart": "node scripts/verify-restart.js",
+    "queue": "node --env-file-if-exists=.env scripts/queue.js"
+  },
+  "engines": {
+    "node": ">=24.15.0 <25",
+    "npm": ">=11 <12"
+  },
+  "packageManager": "npm@11.12.1",
+  "dependencies": {
+    "mqtt": "5.16.1"
+  },
+  "devDependencies": {
+    "mqtt-packet": "9.0.2"
+  }
+}

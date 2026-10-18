@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:envmon:telemetry:v1",
+  "$comment": "协议设计草案 0.1，首次实现前冻结；消息字节上限、主题匹配和设备登记由接入层另行校验。",
+  "title": "教室环境监测上传数据",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "device_id",
+    "room_id",
+    "boot_id",
+    "seq",
+    "sampled_at",
+    "source",
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "device_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "room_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "boot_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8,32}$"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "sampled_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["simulator", "hardware"]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "temperature_c",
+        "humidity_rh",
+        "co2_ppm",
+        "dust_ug_m3",
+        "illuminance_lux"
+      ],
+      "properties": {
+        "temperature_c": {
+          "type": ["number", "null"],
+          "description": "摄氏度"
+        },
+        "humidity_rh": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "相对湿度 %RH"
+        },
+        "co2_ppm": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "二氧化碳浓度 ppm"
+        },
+        "dust_ug_m3": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "GP2Y1010 粉尘浓度估算值 μg/m³，不等同于 PM2.5"
+        },
+        "illuminance_lux": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "光照强度 lx"
+        }
+      }
+    }
+  }
+}
